@@ -1,0 +1,38 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "xx",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx parcel  src/index.html",
+    "serve": "nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qq919006380/vue-chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qq919006380/vue-chat/issues"
+  },
+  "homepage": "https://github.com/qq919006380/vue-chat#readme",
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.0.0",
+    "nodemon": "^1.19.2",
+    "parcel-bundler": "^1.12.3",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "alias": {
+    "vue": "./node_modules/vue/dist/vue.common.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "vue": "^2.6.10",
+    "vue-hot-reload-api": "^2.3.4"
+  }
+}
