@@ -4,20 +4,29 @@ var http = require('http').Server(app);
 // 思考：socket.io作为一个函数，当前http作为参数传入生成一个io对象？
 // io-server
 var io = require("socket.io")(http);
+var port = 3000
+// 路由为/默认www静态文件夹
+app.use('/image', express.static(__dirname + '/public/image'));
+
 var users = []; // 储存登录用户
 var usersInfo = [];  // 存储用户姓名和头像
-io.on('connection', (socket)=> {
+io.on('connection', (socket) => {
     console.log('登录')
     // 渲染在线人员
     io.emit('disUser', usersInfo);
 
     // 登录，检测用户名
-    socket.on('login', (user)=> {
-        if(users.indexOf(user.name) > -1) { 
+    socket.on('login', (user) => {
+        if (users.indexOf(user.name) > -1) {
             socket.emit('loginError');
         } else {
+            
             users.push(user.name);
-            usersInfo.push(user);
+            usersInfo.push({
+                name:user.name,
+                imgN:user.imgN,
+                imgPath:'http://localhost:' + port + '/image/user' + user.imgN + '.jpg',
+            });
 
             socket.emit('loginSuc');
             socket.nickname = user.name;
@@ -31,7 +40,7 @@ io.on('connection', (socket)=> {
     });
 
     // 发送窗口抖动
-    socket.on('shake', ()=> {
+    socket.on('shake', () => {
         socket.emit('shake', {
             name: '您'
         });
@@ -41,11 +50,11 @@ io.on('connection', (socket)=> {
     });
 
     // 发送消息事件
-    socket.on('sendMsg', (data)=> {
+    socket.on('sendMsg', (data) => {
         var img = '';
-        for(var i = 0; i < usersInfo.length; i++) {
-            if(usersInfo[i].name == socket.nickname) {
-                img = usersInfo[i].img;
+        for (var i = 0; i < usersInfo.length; i++) {
+            if (usersInfo[i].name == socket.nickname) {
+                img = usersInfo[i].imgPath;
             }
         }
         socket.broadcast.emit('receiveMsg', {
@@ -64,12 +73,12 @@ io.on('connection', (socket)=> {
             type: data.type,
             side: 'right'
         });
-    });  
+    });
 
     // 断开连接时
-    socket.on('disconnect', ()=> {
-        var index = users.indexOf(socket.nickname); 
-        if(index > -1 ) {  // 避免是undefined
+    socket.on('disconnect', () => {
+        var index = users.indexOf(socket.nickname);
+        if (index > -1) {  // 避免是undefined
             users.splice(index, 1);  // 删除用户信息
             usersInfo.splice(index, 1);  // 删除用户信息
 
@@ -77,13 +86,13 @@ io.on('connection', (socket)=> {
                 name: socket.nickname,
                 status: '离开'
             });
-            
+
             io.emit('disUser', usersInfo);  // 重新渲染
             console.log('a user left.');
         }
     });
 });
 
-http.listen(3000, function () {
-    console.log('listen 3000 port.');
+http.listen(port, function () {
+    console.log(`listen ${port} port`);
 });

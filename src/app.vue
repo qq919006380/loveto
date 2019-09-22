@@ -5,9 +5,10 @@
       <button @click="login">确定</button>
     </div>
     <div v-else>
-      <div>用户名:{{name}}，在线人数：{{}}</div>
+      <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div>
       <div class="messageBox">
         <div v-for="item in messageList">
+          <img  :src="item.img" width="50"/>
           {{item.date}}
           {{item.name}}:
           {{item.msg}}
@@ -26,19 +27,29 @@ const socket = io("http://localhost:3000");
 export default {
   data() {
     return {
-      name: "",
-      messageList: [],
-      message: "",
+      name: "", //用户名称
+      messageList: [], //消息列表
+      message: "", //消息
+      onlineNumber: 0, //在线人数
+      usersList: [], //用户列表
+
       isShow: true
     };
   },
   mounted() {
+    // 登录
     socket.on("loginSuc", () => {
       this.isShow = false;
     });
     socket.on("loginError", () => {
       alert("用户名已存在，请重新输入！");
       this.name = "";
+    });
+    // 显示在线人员
+    socket.on("disUser", usersInfo => {
+      this.onlineNumber = usersInfo.length;
+      this.usersList = usersInfo;
+      console.log(this.usersList);
     });
     // 接收消息
     socket.on("receiveMsg", obj => {
@@ -51,12 +62,12 @@ export default {
   methods: {
     login() {
       if (this.name == "") {
-        alert("名称不能为空")
+        alert("名称不能为空");
       } else {
-        var imgN = Math.floor(Math.random() * 4) + 1; // 随机分配头像
+        var imgN = Math.floor(Math.random() * 4) + 1; // 随机分配头像编号
         socket.emit("login", {
           name: this.name,
-          img: "image/user" + imgN + ".jpg"
+          imgN: imgN
         });
       }
     },
@@ -73,5 +84,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang='less'>
+.messageBox {
+  height: 200px;
+  border: 1px solid;
+  overflow: scroll;
+}
 </style>
