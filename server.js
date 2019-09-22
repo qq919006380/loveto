@@ -4,9 +4,13 @@ var http = require('http').Server(app);
 // 思考：socket.io作为一个函数，当前http作为参数传入生成一个io对象？
 // io-server
 var io = require("socket.io")(http);
+//设置静态资源
+app.use('/image', express.static(__dirname + '/static/image'));
+// 路由为/默认dist静态文件夹
+app.use('/', express.static(__dirname + '/dist'));
+
+
 var port = 3000
-// 路由为/默认www静态文件夹
-app.use('/image', express.static(__dirname + '/public/image'));
 
 var users = []; // 储存登录用户
 var usersInfo = [];  // 存储用户姓名和头像

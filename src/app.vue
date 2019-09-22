@@ -8,7 +8,7 @@
       <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div>
       <div class="messageBox">
         <div v-for="item in messageList">
-          <img  :src="item.img" width="50"/>
+          <img :src="item.img" width="50" />
           {{item.date}}
           {{item.name}}:
           {{item.msg}}
@@ -23,6 +23,7 @@
 <script>
 import io from "socket.io-client";
 const socket = io("http://localhost:3000");
+// const socket = io("http://47.91.156.35:3000");
 
 export default {
   data() {

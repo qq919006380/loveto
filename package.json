@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx parcel  src/index.html",
-    "serve": "nodemon server/server.js"
+    "serve": "nodemon server.js"
   },
   "repository": {
     "type": "git",
