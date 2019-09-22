@@ -8,7 +8,7 @@ var io = require("socket.io")(http);
 app.use('/image', express.static(__dirname + '/static/image'));
 // 路由为/默认dist静态文件夹
 app.use('/', express.static(__dirname + '/dist'));
-
+console.log(__dirname + '/static/image')
 
 var port = 3000
 
@@ -24,14 +24,14 @@ io.on('connection', (socket) => {
         if (users.indexOf(user.name) > -1) {
             socket.emit('loginError');
         } else {
-            
+
             users.push(user.name);
             usersInfo.push({
-                name:user.name,
-                imgN:user.imgN,
-                imgPath:'http://localhost:' + port + '/image/user' + user.imgN + '.jpg',
+                name: user.name,
+                imgN: user.imgN,
+                imgPath: user.localhost  + '/image/user' + user.imgN + '.jpg',
             });
-
+            console.log(user)
             socket.emit('loginSuc');
             socket.nickname = user.name;
             io.emit('system', {

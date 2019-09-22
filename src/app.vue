@@ -22,12 +22,13 @@
 
 <script>
 import io from "socket.io-client";
-const socket = io("http://localhost:3000");
-// const socket = io("http://47.91.156.35:3000");
-
+// var aaa="http://localhost:3000"
+var aaa="http://47.91.156.35:3000"
+const socket = io(aaa);
 export default {
   data() {
     return {
+      localhost:aaa,
       name: "", //用户名称
       messageList: [], //消息列表
       message: "", //消息
@@ -68,7 +69,8 @@ export default {
         var imgN = Math.floor(Math.random() * 4) + 1; // 随机分配头像编号
         socket.emit("login", {
           name: this.name,
-          imgN: imgN
+          imgN: imgN,
+          localhost:this.localhost
         });
       }
     },
