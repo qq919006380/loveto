@@ -22,13 +22,16 @@
 
 <script>
 import io from "socket.io-client";
-// var aaa="http://localhost:3000"
-var aaa="http://47.91.156.35:3000"
-const socket = io(aaa);
+if (process.env.NODE_ENV === "development") {
+  var host = "http://localhost:3000";
+} else if (process.env.NODE_ENV === "production") {
+  var host = "http://47.91.156.35:3000";
+}
+const socket = io(host);
 export default {
   data() {
     return {
-      localhost:aaa,
+      localhost: host,
       name: "", //用户名称
       messageList: [], //消息列表
       message: "", //消息
@@ -70,7 +73,7 @@ export default {
         socket.emit("login", {
           name: this.name,
           imgN: imgN,
-          localhost:this.localhost
+          localhost: this.localhost
         });
       }
     },
