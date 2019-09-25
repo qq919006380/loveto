@@ -27,6 +27,7 @@ if (process.env.NODE_ENV === "development") {
 } else if (process.env.NODE_ENV === "production") {
   var host = "http://47.91.156.35:3000";
 }
+console.log(process.env.NODE_ENV);
 const socket = io(host);
 export default {
   data() {
