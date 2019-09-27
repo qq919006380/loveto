@@ -5,16 +5,16 @@
       <button @click="login">确定</button>
     </div>
     <div v-else>
-      <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div>
+      <!-- <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div> -->
       <div class="messageBox">
-        <div v-for="item in messageList">
-          <img :src="item.img" width="50" />
-          {{item.date}}
-          {{item.name}}:
-          {{item.msg}}
+        <div v-for="item in messageList" :class="`side-`+item.side">
+          <!-- <img :src="item.img" width="50" /> -->
+          <span style="font-size: 12px;color: #999;">{{item.date}}</span>
+          <span style="color: #666">{{item.name}}</span>
+          <div>{{item.msg}}</div>
         </div>
       </div>
-      <textarea v-model="message" id cols="30" rows="5"></textarea>
+      <textarea v-model="message" id cols="50" rows="2"></textarea>
       <button @click="sendMsg">发送</button>
     </div>
   </div>
@@ -22,13 +22,24 @@
 
 <script>
 import io from "socket.io-client";
+import AV from "leancloud-storage";
+var host;
 if (process.env.NODE_ENV === "development") {
-  var host = "http://localhost:3000";
+  host = "http://localhost:3000";
 } else if (process.env.NODE_ENV === "production") {
-  var host = "http://47.91.156.35:3000";
+  host = "http://47.91.156.35:3000";
 }
-console.log(process.env.NODE_ENV);
 const socket = io(host);
+console.log(process.env.NODE_ENV);
+
+// 存储服务
+var { Query, User } = AV;
+AV.init({
+  appId: "YrgsfAbDReeCMhqSnVr6mWzP-gzGzoHsz",
+  appKey: "iji7fEkSuBWvDwNHuLjcoeKB"
+  // serverURLs: "https://xxx.example.com"
+});
+
 export default {
   data() {
     return {
@@ -38,7 +49,7 @@ export default {
       message: "", //消息
       onlineNumber: 0, //在线人数
       usersList: [], //用户列表
-
+      imgN: Math.floor(Math.random() * 4) + 1, // 随机分配头像编号
       isShow: true
     };
   },
@@ -70,22 +81,43 @@ export default {
       if (this.name == "") {
         alert("名称不能为空");
       } else {
-        var imgN = Math.floor(Math.random() * 4) + 1; // 随机分配头像编号
         socket.emit("login", {
           name: this.name,
-          imgN: imgN,
+          imgN: this.imgN,
           localhost: this.localhost
         });
       }
     },
     sendMsg() {
-      var color = "#000000";
-      socket.emit("sendMsg", {
-        msg: this.message,
-        color: color,
-        type: "text"
-      });
-      this.message = "";
+      // 储存
+      // 声明 class
+      var Chat = AV.Object.extend("chatList");
+      // 构建对象
+      var chat = new Chat();
+      // 为属性赋值
+      chat.set("username", this.name);
+      chat.set("message", this.message);
+      chat.set("imgN", this.imgN);
+      chat.set("side", "left");
+
+      // 将对象保存到云端
+      chat.save().then(
+        chat => {
+          // 成功保存
+          var color = "#000000";
+          socket.emit("sendMsg", {
+            msg: this.message,
+            color: color,
+            type: "text"
+          });
+          this.message = "";
+
+          console.log("保存成功。objectId：" + chat.id);
+        },
+        function(error) {
+          // 异常处理
+        }
+      );
     }
   }
 };
@@ -93,8 +125,17 @@ export default {
 
 <style scoped lang='less'>
 .messageBox {
+  width: 400px;
   height: 200px;
+  padding: 30px;
   border: 1px solid;
-  overflow: scroll;
+  overflow-y: scroll;
+  // opacity: 0;
+  & > .side-right {
+    text-align: right;
+  }
+  & > .side-left {
+    text-align: left;
+  }
 }
 </style>
