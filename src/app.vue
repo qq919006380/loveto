@@ -49,10 +49,13 @@ export default {
       message: "", //消息
       onlineNumber: 0, //在线人数
       usersList: [], //用户列表
+      date: "", //时间
+      color: "#000000",
       imgN: Math.floor(Math.random() * 4) + 1, // 随机分配头像编号
       isShow: true
     };
   },
+  created() {},
   mounted() {
     // 登录
     socket.on("loginSuc", () => {
@@ -70,9 +73,6 @@ export default {
     });
     // 接收消息
     socket.on("receiveMsg", obj => {
-      var date = new Date().toTimeString().substr(0, 8);
-      obj.date = date;
-      console.log(obj);
       this.messageList.push(obj);
     });
   },
@@ -81,6 +81,24 @@ export default {
       if (this.name == "") {
         alert("名称不能为空");
       } else {
+        // 下面的代码获取所有 lastName 为 Smith 的 Student：
+        var query = new AV.Query("chatList");
+        // query.equalTo("message", "4555");
+        query.find().then(chatList => {
+          this.messageList = chatList.map(val => {
+            return {
+              name: val.attributes.username,
+              side: val.attributes.side,
+              msg: val.attributes.message,
+              img: val.attributes.imgN,
+              color: val.attributes.color,
+              date: val.attributes.date,
+              type: val.attributes.type
+            };
+          });
+          console.log(this.messageList);
+        });
+
         socket.emit("login", {
           name: this.name,
           imgN: this.imgN,
@@ -89,35 +107,53 @@ export default {
       }
     },
     sendMsg() {
+      if (this.message == "") {
+        alert("发送内容不能为空");
+        return;
+      }
       // 储存
       // 声明 class
       var Chat = AV.Object.extend("chatList");
+      this.date = new Date().toTimeString().substr(0, 8);
+
       // 构建对象
       var chat = new Chat();
       // 为属性赋值
       chat.set("username", this.name);
       chat.set("message", this.message);
       chat.set("imgN", this.imgN);
+      chat.set("date", this.date);
+      chat.set("color", this.color);
       chat.set("side", "left");
+      chat.set("type", "text");
 
       // 将对象保存到云端
       chat.save().then(
         chat => {
           // 成功保存
-          var color = "#000000";
-          socket.emit("sendMsg", {
-            msg: this.message,
-            color: color,
-            type: "text"
-          });
-          this.message = "";
-
+          this.send();
           console.log("保存成功。objectId：" + chat.id);
         },
         function(error) {
           // 异常处理
         }
       );
+    },
+    send() {
+      socket.emit("sendMsg", {
+        msg: this.message,
+        color: this.color,
+        type: "text",
+        date: this.date
+      });
+      this.message = "";
+      this.scrollTop();
+    },
+    scrollTop() {
+      setTimeout(() => {
+        var box = this.$el.querySelector(".messageBox");
+        box.scrollTop = box.scrollHeight+999;
+      }, 100);
     }
   }
 };

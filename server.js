@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
             msg: data.msg,
             color: data.color,
             type: data.type,
+            date:data.date,
             side: 'left'
         });
         socket.emit('receiveMsg', {
@@ -75,6 +76,7 @@ io.on('connection', (socket) => {
             msg: data.msg,
             color: data.color,
             type: data.type,
+            date:data.date,
             side: 'right'
         });
     });
