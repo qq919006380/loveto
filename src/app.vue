@@ -8,7 +8,7 @@
       <!-- <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div> -->
       <div class="messageBox">
         <div v-for="item in messageList" :class="`side-`+item.side">
-          <!-- <img :src="item.img" width="50" /> -->
+          <img :src="item.img" width="50" />
           <span style="font-size: 12px;color: #999;">{{item.date}}</span>
           <span style="color: #666">{{item.name}}</span>
           <div>{{item.msg}}</div>
@@ -74,6 +74,7 @@ export default {
     // 接收消息
     socket.on("receiveMsg", obj => {
       this.messageList.push(obj);
+      this.scrollTop();
     });
   },
   methods: {
@@ -138,6 +139,7 @@ export default {
           // 异常处理
         }
       );
+      this.send();
     },
     send() {
       socket.emit("sendMsg", {
@@ -147,12 +149,12 @@ export default {
         date: this.date
       });
       this.message = "";
-      this.scrollTop();
+      
     },
     scrollTop() {
       setTimeout(() => {
         var box = this.$el.querySelector(".messageBox");
-        box.scrollTop = box.scrollHeight+999;
+        box.scrollTop = box.scrollHeight;
       }, 100);
     }
   }
