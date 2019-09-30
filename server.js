@@ -1,14 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-// 思考：socket.io作为一个函数，当前http作为参数传入生成一个io对象？
-// io-server
 var io = require("socket.io")(http);
+var AV = require('leancloud-storage');
 //设置静态资源
 app.use('/image', express.static(__dirname + '/static/image'));
 // 路由为/默认dist静态文件夹
 app.use('/', express.static(__dirname + '/dist'));
-console.log(__dirname + '/static/image')
+// 存储服务
+var { Query, User } = AV;
+AV.init({
+    appId: "YrgsfAbDReeCMhqSnVr6mWzP-gzGzoHsz",
+    appKey: "iji7fEkSuBWvDwNHuLjcoeKB"
+    // serverURLs: "https://xxx.example.com"
+});
 
 var port = 3000
 
@@ -29,7 +34,7 @@ io.on('connection', (socket) => {
             usersInfo.push({
                 name: user.name,
                 imgN: user.imgN,
-                imgPath: user.localhost  + '/image/user' + user.imgN + '.jpg',
+                imgPath: user.localhost + '/image/user' + user.imgN + '.jpg',
             });
             console.log(user)
             socket.emit('loginSuc');
@@ -39,9 +44,29 @@ io.on('connection', (socket) => {
                 status: '进入'
             });
             io.emit('disUser', usersInfo);
+            // getChatList()
             console.log(users.length + ' user connect.');
         }
     });
+
+    // function getChatList() {
+    //     var query = new AV.Query("chatList");
+    //     query.find().then(chatList => {
+    //         messageList = chatList.map(val => {
+    //             return {
+    //                 name: val.attributes.username,
+    //                 side: val.attributes.side,
+    //                 msg: val.attributes.message,
+    //                 img: val.attributes.imgN,
+    //                 color: val.attributes.color,
+    //                 date: val.attributes.date,
+    //                 type: val.attributes.type
+    //             };
+    //         });
+    //         socket.emit('getChatList', messageList);
+    //     });
+    // }
+
 
     // 发送窗口抖动
     socket.on('shake', () => {
@@ -67,7 +92,7 @@ io.on('connection', (socket) => {
             msg: data.msg,
             color: data.color,
             type: data.type,
-            date:data.date,
+            date: data.date,
             side: 'left'
         });
         socket.emit('receiveMsg', {
@@ -76,10 +101,70 @@ io.on('connection', (socket) => {
             msg: data.msg,
             color: data.color,
             type: data.type,
-            date:data.date,
+            date: data.date,
             side: 'right'
         });
+        data.name = socket.nickname
+        data.img = img
+        xxx(data)
     });
+
+    function xxx(data) {
+        // 储存 声明 class
+        var Chat = AV.Object.extend("chatList");
+        var date = new Date().toTimeString().substr(0, 8);
+
+        // 构建对象
+        var chat = new Chat();
+        // 为属性赋值
+        chat.set("username", data.name);//0
+        chat.set("message", data.msg);
+        chat.set("img", data.img);
+        // chat.set("imgN", data.imgN);//0
+        chat.set("date", date);
+        chat.set("color", data.color);
+        chat.set("side", "left");
+        chat.set("type", data.type);
+
+        // 将对象保存到云端
+        chat.save().then(
+            chat => {
+                console.log("保存成功。objectId：" + chat.id);
+            },
+            function (error) {
+                // 异常处理
+            }
+        );
+    }
+
+
+    // 储存 声明 class
+    var Chat = AV.Object.extend("chatList");
+    this.date = new Date().toTimeString().substr(0, 8);
+
+    // 构建对象
+    var chat = new Chat();
+    // 为属性赋值
+    chat.set("username", this.name);
+    chat.set("message", this.message);
+    chat.set("imgN", this.imgN);
+    chat.set("date", this.date);
+    chat.set("color", this.color);
+    chat.set("side", "left");
+    chat.set("type", "text");
+
+    // 将对象保存到云端
+    chat.save().then(
+        chat => {
+            // 成功保存
+            this.send();
+            console.log("保存成功。objectId：" + chat.id);
+        },
+        function (error) {
+            // 异常处理
+        }
+    );
+
 
     // 断开连接时
     socket.on('disconnect', () => {

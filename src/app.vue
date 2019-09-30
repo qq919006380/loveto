@@ -8,7 +8,7 @@
       <!-- <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div> -->
       <div class="messageBox">
         <div v-for="item in messageList" :class="`side-`+item.side">
-          <img :src="item.img" width="50" />
+          <!-- <img :src="item.img" width="50" /> -->
           <span style="font-size: 12px;color: #999;">{{item.date}}</span>
           <span style="color: #666">{{item.name}}</span>
           <div>{{item.msg}}</div>
@@ -22,7 +22,7 @@
 
 <script>
 import io from "socket.io-client";
-import AV from "leancloud-storage";
+
 var host;
 if (process.env.NODE_ENV === "development") {
   host = "http://localhost:3000";
@@ -31,14 +31,6 @@ if (process.env.NODE_ENV === "development") {
 }
 const socket = io(host);
 console.log(process.env.NODE_ENV);
-
-// 存储服务
-var { Query, User } = AV;
-AV.init({
-  appId: "YrgsfAbDReeCMhqSnVr6mWzP-gzGzoHsz",
-  appKey: "iji7fEkSuBWvDwNHuLjcoeKB"
-  // serverURLs: "https://xxx.example.com"
-});
 
 export default {
   data() {
@@ -71,6 +63,20 @@ export default {
       this.usersList = usersInfo;
       console.log(this.usersList);
     });
+    // 获取消息列表
+    socket.on("getChatList", obj => {
+      console.log(obj);
+      this.messageList = obj.map(val => {
+        return {
+          side: val.side,
+          img: val.img,
+          date: val.date,
+          name: val.name,
+          msg: val.msg
+        };
+      });
+    });
+
     // 接收消息
     socket.on("receiveMsg", obj => {
       this.messageList.push(obj);
@@ -82,24 +88,6 @@ export default {
       if (this.name == "") {
         alert("名称不能为空");
       } else {
-        // 下面的代码获取所有 lastName 为 Smith 的 Student：
-        var query = new AV.Query("chatList");
-        // query.equalTo("message", "4555");
-        query.find().then(chatList => {
-          this.messageList = chatList.map(val => {
-            return {
-              name: val.attributes.username,
-              side: val.attributes.side,
-              msg: val.attributes.message,
-              img: val.attributes.imgN,
-              color: val.attributes.color,
-              date: val.attributes.date,
-              type: val.attributes.type
-            };
-          });
-          console.log(this.messageList);
-        });
-
         socket.emit("login", {
           name: this.name,
           imgN: this.imgN,
@@ -112,33 +100,7 @@ export default {
         alert("发送内容不能为空");
         return;
       }
-      // 储存
-      // 声明 class
-      var Chat = AV.Object.extend("chatList");
-      this.date = new Date().toTimeString().substr(0, 8);
-
-      // 构建对象
-      var chat = new Chat();
-      // 为属性赋值
-      chat.set("username", this.name);
-      chat.set("message", this.message);
-      chat.set("imgN", this.imgN);
-      chat.set("date", this.date);
-      chat.set("color", this.color);
-      chat.set("side", "left");
-      chat.set("type", "text");
-
-      // 将对象保存到云端
-      chat.save().then(
-        chat => {
-          // 成功保存
-          this.send();
-          console.log("保存成功。objectId：" + chat.id);
-        },
-        function(error) {
-          // 异常处理
-        }
-      );
+      // 成功保存
       this.send();
     },
     send() {
@@ -149,7 +111,6 @@ export default {
         date: this.date
       });
       this.message = "";
-      
     },
     scrollTop() {
       setTimeout(() => {
