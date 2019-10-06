@@ -72,7 +72,9 @@ export default {
           img: val.img,
           date: val.date,
           name: val.name,
-          msg: val.msg
+          msg: val.msg,
+          color: val.color,
+          type: val.type
         };
       });
     });
@@ -103,7 +105,9 @@ export default {
       // 成功保存
       this.send();
     },
+
     send() {
+      this.date = new Date().toTimeString().substr(0, 8);
       socket.emit("sendMsg", {
         msg: this.message,
         color: this.color,
@@ -112,6 +116,7 @@ export default {
       });
       this.message = "";
     },
+
     scrollTop() {
       setTimeout(() => {
         var box = this.$el.querySelector(".messageBox");

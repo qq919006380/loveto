@@ -44,28 +44,28 @@ io.on('connection', (socket) => {
                 status: '进入'
             });
             io.emit('disUser', usersInfo);
-            // getChatList()
+            getChatList()
             console.log(users.length + ' user connect.');
         }
     });
 
-    // function getChatList() {
-    //     var query = new AV.Query("chatList");
-    //     query.find().then(chatList => {
-    //         messageList = chatList.map(val => {
-    //             return {
-    //                 name: val.attributes.username,
-    //                 side: val.attributes.side,
-    //                 msg: val.attributes.message,
-    //                 img: val.attributes.imgN,
-    //                 color: val.attributes.color,
-    //                 date: val.attributes.date,
-    //                 type: val.attributes.type
-    //             };
-    //         });
-    //         socket.emit('getChatList', messageList);
-    //     });
-    // }
+    function getChatList() {
+        var query = new AV.Query("chatList");
+        query.find().then(chatList => {
+            messageList = chatList.map(val => {
+                return {
+                    name: val.attributes.username,
+                    side: val.attributes.side,
+                    msg: val.attributes.message,
+                    img: val.attributes.imgN,
+                    color: val.attributes.color,
+                    date: val.attributes.date,
+                    type: val.attributes.type
+                };
+            });
+            socket.emit('getChatList', messageList);
+        });
+    }
 
 
     // 发送窗口抖动
@@ -106,13 +106,17 @@ io.on('connection', (socket) => {
         });
         data.name = socket.nickname
         data.img = img
-        xxx(data)
-    });
+        console.log(!!data.name)
+        if (data.name) {
+            storeChatHistory(data) 
+        }
 
-    function xxx(data) {
+    });
+    
+    function storeChatHistory(data) {
         // 储存 声明 class
         var Chat = AV.Object.extend("chatList");
-        var date = new Date().toTimeString().substr(0, 8);
+        // var date = new Date().toTimeString().substr(0, 8);
 
         // 构建对象
         var chat = new Chat();
@@ -121,7 +125,7 @@ io.on('connection', (socket) => {
         chat.set("message", data.msg);
         chat.set("img", data.img);
         // chat.set("imgN", data.imgN);//0
-        chat.set("date", date);
+        chat.set("date", data.date);
         chat.set("color", data.color);
         chat.set("side", "left");
         chat.set("type", data.type);
@@ -136,35 +140,6 @@ io.on('connection', (socket) => {
             }
         );
     }
-
-
-    // 储存 声明 class
-    var Chat = AV.Object.extend("chatList");
-    this.date = new Date().toTimeString().substr(0, 8);
-
-    // 构建对象
-    var chat = new Chat();
-    // 为属性赋值
-    chat.set("username", this.name);
-    chat.set("message", this.message);
-    chat.set("imgN", this.imgN);
-    chat.set("date", this.date);
-    chat.set("color", this.color);
-    chat.set("side", "left");
-    chat.set("type", "text");
-
-    // 将对象保存到云端
-    chat.save().then(
-        chat => {
-            // 成功保存
-            this.send();
-            console.log("保存成功。objectId：" + chat.id);
-        },
-        function (error) {
-            // 异常处理
-        }
-    );
-
 
     // 断开连接时
     socket.on('disconnect', () => {
