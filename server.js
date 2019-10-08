@@ -108,11 +108,11 @@ io.on('connection', (socket) => {
         data.img = img
         console.log(!!data.name)
         if (data.name) {
-            storeChatHistory(data) 
+            storeChatHistory(data)
         }
 
     });
-    
+
     function storeChatHistory(data) {
         // 储存 声明 class
         var Chat = AV.Object.extend("chatList");
@@ -159,6 +159,6 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(port, function () {
+http.listen(port, '0.0.0.0', function () {
     console.log(`listen ${port} port`);
 });
