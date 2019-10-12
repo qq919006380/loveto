@@ -1,31 +1,44 @@
 <template>
   <div class="container">
     <div class="content">
-      <div class="quotations-item boy">
+      <div class="quotations-item" :class="item.gender" v-for="item in quotations[randomNun]">
         <div class="avatar">
           <Avatar
-            src="https://i.loli.net/2017/08/21/599a521472424.jpg"
+            src="http://www.ghost64.com/qqtupian/zixunImg/local/2019/03/21/15531703562123.jpeg"
             size="large"
             icon="ios-person"
           />
         </div>
-        <div class="say">你是哪里人</div>
-      </div>
-      <div class="quotations-item girl">
-        <div class="avatar">
-          <Avatar size="large" icon="ios-person" />
-        </div>
-        <div class="say">北京人</div>
+        <div class="say">{{item.say}}</div>
       </div>
     </div>
     <div class="content-btn">
-      <Button class="btn">随机一条</Button>
+      <Button class="btn" @click="updateConversation">随机一条</Button>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import quotations from "../quotations.js";
+export default {
+  data() {
+    return {
+      quotations: quotations,
+      randomNun: 0
+    };
+  },
+  methods: {
+    updateConversation() {
+      this.random(0, quotations.length - 1);
+    },
+    random(min, max) {
+      var choices = max - min + 1;
+      var randomNun = Math.floor(Math.random() * choices + min);
+      this.randomNun = randomNun;
+      return randomNun;
+    }
+  }
+};
 </script>
 
 <style scoped lang='less'>
@@ -37,6 +50,7 @@ export default {};
 .container {
   .content {
     width: @wrap-width;
+    height: 80vh;;
     margin: 0 auto;
     background: @bg_3;
     .quotations-item.boy {
@@ -45,6 +59,19 @@ export default {};
       .avatar {
         margin: 10px;
         clear: both;
+      }
+      .say {
+        border: solid 1px;
+        border-radius: 5px;
+        padding: 2px 8px;
+        position: relative;
+        margin-right: 20px;
+        font-size: 18px;
+      }
+      .say::after {
+        content: "";
+        position: absolute;
+        display: inline-block;
       }
     }
     .quotations-item.girl {
@@ -57,12 +84,14 @@ export default {};
       }
       .say {
         border: solid 1px;
+        border-radius: 5px;
         padding: 2px 8px;
         position: relative;
         margin-right: 20px;
+        font-size: 18px;
       }
       .say::after {
-        content: "x";
+        content: "";
         position: absolute;
         display: inline-block;
       }

@@ -15,7 +15,7 @@ AV.init({
     // serverURLs: "https://xxx.example.com"
 });
 
-var port = 3000
+var port = 80
 
 var users = []; // 储存登录用户
 var usersInfo = [];  // 存储用户姓名和头像
