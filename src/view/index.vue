@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="content-btn">
-      <Button class="btn" @click="updateConversation">随机一条</Button>
+      <Button size='large' class="btn" @click="updateConversation">随机一条</Button>
     </div>
   </div>
 </template>
