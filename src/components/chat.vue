@@ -1,14 +1,21 @@
 <template>
   <div>
     <div v-if="isShow">
-      <input v-model="name" type="text" placeholder="请输入名称" />
-      <button @click="login">确定</button>
+      <div class="loginBox">
+        <div class="messageHeader">
+          <a @click="$emit('closeChat')">关闭</a>
+        </div>
+        <div class="loginCenter">
+          <input @keyup.enter="login" v-model="name" placeholder="请输入名称" type="text" />
+          <Button size="small" class="asd" @click="login">登录</Button>
+        </div>
+      </div>
     </div>
-    <div v-else style="position: relative;background: #fff;">
+    <div v-else style="position: relative;">
       <div class="messageBox">
         <div class="messageHeader">
           <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div>
-          <a>关闭</a>
+          <a @click="$emit('closeChat')">关闭</a>
         </div>
         <div v-for="item in messageList" :class="`side-`+item.side">
           <div class="text">
@@ -23,7 +30,13 @@
           </div>
         </div>
       </div>
-      <textarea class="textarea" v-model="message" rows="3" @keyup.enter="sendMsg"></textarea>
+      <textarea
+        placeholder="输入发送内容"
+        class="textarea"
+        v-model="message"
+        rows="3"
+        @keyup.enter="sendMsg"
+      ></textarea>
       <Button size="small" class="send_btn" @click="sendMsg">发送(Enter)</Button>
     </div>
   </div>
@@ -86,6 +99,7 @@ export default {
           type: val.type
         };
       });
+      this.scrollTop();
     });
 
     // 接收消息
@@ -138,16 +152,37 @@ export default {
 
 <style scoped lang='less'>
 @messageBox_width: 400px;
-.messageBox {
+@messageBox_height: 400px;
+.loginBox {
   width: @messageBox_width;
-  height: 400px;
+  height: @messageBox_height;
+  border: 1px solid;
+  background: rgba(149, 79, 77, 0.8);
+  & > .messageHeader {
+    text-align: right;
+  }
+  & > .loginCenter {
+    padding: 100px 10px;
+    text-align: center;
+    & > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+}
+.messageBox {
+  background: rgba(252, 230, 207, 0.8);
+  width: @messageBox_width;
+  height: @messageBox_height;
   border: 1px solid;
   border-color: #999;
   overflow-y: scroll;
   border-bottom: none;
+  padding-bottom: 10px;
   // opacity: 0;
   & > .side-right {
     display: flex;
+    margin: 5px 0;
     text-align: right;
     justify-content: flex-end;
     padding: 0 30px;
@@ -159,10 +194,12 @@ export default {
     }
     .avatar {
       order: 2;
+      margin-left: 5px;
     }
   }
   & > .side-left {
     display: flex;
+    margin: 5px 0;
     text-align: left;
     padding: 0 30px;
     .text {
@@ -173,6 +210,7 @@ export default {
     }
     .avatar {
       order: 1;
+      margin-right: 5px;
     }
   }
   .messageHeader {

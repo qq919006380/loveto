@@ -6,6 +6,34 @@
     <div>
       <router-view></router-view>
     </div>
+    <div class="footer">
+      <div class="footer_item">
+        <Poptip trigger="hover">
+          <a>资助我</a>
+          <div slot="content">
+            <img width="200" src="../weixin.png" alt />
+          </div>
+        </Poptip>
+      </div>
+      <div class="footer_item">
+        <Poptip trigger="hover">
+          <a>联系我</a>
+          <div slot="content">
+            <img width="30" src="../static/emoji/qq.jpg" alt />
+            <span style="font-size:14px">QQ:919006380</span>
+          </div>
+        </Poptip>
+      </div>
+      <!-- <div class="footer_item">
+        <Poptip trigger="hover">
+          <a>添加语录</a>
+          <div slot="content">ces</div>
+        </Poptip>
+      </div>-->
+      <div class="footer_item">
+        <Button @click="openChat" size="small">打开聊天室</Button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -14,6 +42,9 @@ export default {
   methods: {
     toIndex() {
       this.$router.push("/index");
+    },
+    openChat() {
+      this.$EventBus.$emit("toggleChat");
     }
   }
 };
@@ -29,8 +60,17 @@ export default {
   padding: 20px;
   background: @bg_1;
   color: @bg_4;
-  font-family:  'LiSu','Courier', monospace;
+  font-family: "LiSu", "Courier", monospace;
   & > nav-item {
+  }
+}
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > .footer_item {
+    display: inline-block;
+    margin: 10px;
   }
 }
 </style>

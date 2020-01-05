@@ -13,10 +13,13 @@
       </div>
     </div>
     <div class="content-btn">
-      <Button size="large" class="btn" @click="updateConversation">随机一条</Button>
+      <Button :loading="loading" size="large" class="btn" @click="updateConversation">
+        <span v-if="!loading">随机一条</span>
+        <span v-else>Loading...</span>
+      </Button>
     </div>
-    <div class="chat">
-      <Chat></Chat>
+    <div class="chat" v-show="isShowChat">
+      <Chat @closeChat="closeChat"></Chat>
     </div>
   </div>
 </template>
@@ -25,18 +28,33 @@
 import quotations from "../quotations.js";
 import Chat from "../components/chat";
 export default {
+  created() {
+    this.$EventBus.$on("toggleChat", () => {
+      console.log("toggleChat");
+      this.isShowChat = !this.isShowChat;
+    });
+  },
   components: {
     Chat
   },
   data() {
     return {
+      isShowChat: false,
+      loading: false,
       quotations: quotations,
       randomNun: this.random(0, quotations.length - 1)
     };
   },
   methods: {
+    closeChat() {
+      this.isShowChat = false;
+    },
     updateConversation() {
-      this.random(0, quotations.length - 1);
+      this.loading = true;
+      setTimeout(() => {
+        this.random(0, quotations.length - 1);
+        this.loading = false;
+      }, 350);
     },
     random(min, max) {
       var choices = max - min + 1;
@@ -51,11 +69,12 @@ export default {
 <style scoped lang='less'>
 @bg_1: rgb(219, 195, 208);
 @bg_2: rgb(94, 2, 49);
-@bg_3: rgb(199, 166, 147);
+@bg_3: rgba(199, 166, 147, 0.8);
 @bg_4: rgb(133, 96, 70);
-@wrap-width: 80%;
+@wrap-width: 50%;
 .container {
   position: relative;
+  background: url("../../bg.jpg");
   .content {
     width: @wrap-width;
     height: 80vh;

@@ -6,6 +6,7 @@ import routes from './router/routers.js';
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 
+Vue.prototype.$EventBus = new Vue()
 Vue.use(iView);
 Vue.use(VueRouter)
 
