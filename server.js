@@ -6,7 +6,7 @@ var AV = require('leancloud-storage');
 //设置静态资源
 app.use('/image', express.static(__dirname + '/static/image'));
 // 路由为/默认dist静态文件夹
-app.use('/', express.static(__dirname + '/dist'));
+// app.use('/', express.static(__dirname + '/dist'));
 // 存储服务
 var { Query, User } = AV;
 AV.init({
@@ -15,7 +15,7 @@ AV.init({
     // serverURLs: "https://xxx.example.com"
 });
 
-var port = 80
+let port = 8080
 
 var users = []; // 储存登录用户
 var usersInfo = [];  // 存储用户姓名和头像
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
                     name: val.attributes.username,
                     side: val.attributes.side,
                     msg: val.attributes.message,
-                    img: val.attributes.imgN,
+                    img: val.attributes.img,
                     color: val.attributes.color,
                     date: val.attributes.date,
                     type: val.attributes.type
@@ -160,5 +160,6 @@ io.on('connection', (socket) => {
 });
 
 http.listen(port, '0.0.0.0', function () {
+    console.log('后端服务启动成功')
     console.log(`listen ${port} port`);
 });

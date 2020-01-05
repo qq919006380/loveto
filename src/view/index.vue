@@ -13,18 +13,25 @@
       </div>
     </div>
     <div class="content-btn">
-      <Button size='large' class="btn" @click="updateConversation">随机一条</Button>
+      <Button size="large" class="btn" @click="updateConversation">随机一条</Button>
+    </div>
+    <div class="chat">
+      <Chat></Chat>
     </div>
   </div>
 </template>
 
 <script>
 import quotations from "../quotations.js";
+import Chat from "../components/chat";
 export default {
+  components: {
+    Chat
+  },
   data() {
     return {
       quotations: quotations,
-      randomNun: 0
+      randomNun: this.random(0, quotations.length - 1)
     };
   },
   methods: {
@@ -48,9 +55,10 @@ export default {
 @bg_4: rgb(133, 96, 70);
 @wrap-width: 80%;
 .container {
+  position: relative;
   .content {
     width: @wrap-width;
-    height: 80vh;;
+    height: 80vh;
     margin: 0 auto;
     background: @bg_3;
     .quotations-item.boy {
@@ -103,6 +111,11 @@ export default {
     .btn {
       width: 100%;
     }
+  }
+  .chat {
+    position: absolute;
+    right: 3px;
+    bottom: 0px;
   }
 }
 </style>

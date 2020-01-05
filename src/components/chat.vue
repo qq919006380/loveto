@@ -4,18 +4,27 @@
       <input v-model="name" type="text" placeholder="请输入名称" />
       <button @click="login">确定</button>
     </div>
-    <div v-else>
-      <!-- <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div> -->
+    <div v-else style="position: relative;background: #fff;">
       <div class="messageBox">
+        <div class="messageHeader">
+          <div>用户名:{{name}}，在线人数：{{onlineNumber}}</div>
+          <a>关闭</a>
+        </div>
         <div v-for="item in messageList" :class="`side-`+item.side">
-          <!-- <img :src="item.img" width="50" /> -->
-          <span style="font-size: 12px;color: #999;">{{item.date}}</span>
-          <span style="color: #666">{{item.name}}</span>
-          <div>{{item.msg}}</div>
+          <div class="text">
+            <div class="t">
+              <span style="font-size: 12px;color: #999;">{{item.date}}</span>
+              <span style="color: #666;font-weight: bold;">{{item.name}}</span>
+            </div>
+            <div class="m">{{item.msg}}</div>
+          </div>
+          <div class="avatar">
+            <img :src="item.img" width="30" />
+          </div>
         </div>
       </div>
-      <textarea v-model="message" id cols="50" rows="2"></textarea>
-      <button @click="sendMsg">发送</button>
+      <textarea class="textarea" v-model="message" rows="3" @keyup.enter="sendMsg"></textarea>
+      <Button size="small" class="send_btn" @click="sendMsg">发送(Enter)</Button>
     </div>
   </div>
 </template>
@@ -25,7 +34,7 @@ import io from "socket.io-client";
 
 var host;
 if (process.env.NODE_ENV === "development") {
-  host = "http://localhost:3000";
+  host = "http://localhost:8080";
 } else if (process.env.NODE_ENV === "production") {
   host = "http://47.91.156.35:3000";
 }
@@ -128,18 +137,67 @@ export default {
 </script>
 
 <style scoped lang='less'>
+@messageBox_width: 400px;
 .messageBox {
-  width: 400px;
-  height: 200px;
-  padding: 30px;
+  width: @messageBox_width;
+  height: 400px;
   border: 1px solid;
+  border-color: #999;
   overflow-y: scroll;
+  border-bottom: none;
   // opacity: 0;
   & > .side-right {
+    display: flex;
     text-align: right;
+    justify-content: flex-end;
+    padding: 0 30px;
+    .text {
+      order: 1;
+      & > .m {
+        text-align: right;
+      }
+    }
+    .avatar {
+      order: 2;
+    }
   }
   & > .side-left {
+    display: flex;
     text-align: left;
+    padding: 0 30px;
+    .text {
+      order: 2;
+      & > .t {
+        direction: rtl;
+      }
+    }
+    .avatar {
+      order: 1;
+    }
   }
+  .messageHeader {
+    position: fixed;
+    width: calc(@messageBox_width - 18px);
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 30px;
+    background: #f2ebec;
+    opacity: 0;
+  }
+  &:hover {
+    .messageHeader {
+      transition: 0.8s;
+      opacity: 1;
+    }
+  }
+}
+.textarea {
+  resize: none;
+  width: 100%;
+}
+.send_btn {
+  position: absolute;
+  right: 4px;
+  bottom: 7px;
 }
 </style>
