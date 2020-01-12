@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="content">
-      <div class="quotations-item" :class="item.gender" v-for="item in quotations[randomNun]">
+      <div class="quotations-item" :class="xxx.gender" v-for="xxx in quotations[randomNun]['item']">
         <div class="avatar">
           <Avatar
             src="http://www.ghost64.com/qqtupian/zixunImg/local/2019/03/21/15531703562123.jpeg"
@@ -9,7 +9,7 @@
             icon="ios-person"
           />
         </div>
-        <div class="say">{{item.say}}</div>
+        <div class="say">{{xxx.say}}</div>
       </div>
     </div>
     <div class="content-btn">
@@ -25,12 +25,11 @@
 </template>
 
 <script>
-import quotations from "../quotations.js";
 import Chat from "../components/chat";
 export default {
   created() {
+    this.getDialogueAll();
     this.$EventBus.$on("toggleChat", () => {
-      console.log("toggleChat");
       this.isShowChat = !this.isShowChat;
     });
   },
@@ -41,26 +40,40 @@ export default {
     return {
       isShowChat: false,
       loading: false,
-      quotations: quotations,
-      randomNun: this.random(0, quotations.length - 1)
+      quotations: [{ item: [] }],
+      randomNun: 0
     };
   },
   methods: {
+    getDialogueAll() {
+      this.$axios({
+        method: "get",
+        url: "http://localhost:8080/getDialogueAll" // 接口地址
+      })
+        .then(response => {
+          console.log(response.data);
+          this.quotations = response.data;
+        })
+        .catch(error => console.log(error, "error")); // 失败的返回
+    },
+
     closeChat() {
       this.isShowChat = false;
     },
     updateConversation() {
       this.loading = true;
       setTimeout(() => {
-        this.random(0, quotations.length - 1);
+        this.random(0, this.quotations.length - 1);
         this.loading = false;
-      }, 350);
+      }, 200);
     },
     random(min, max) {
       var choices = max - min + 1;
       var randomNun = Math.floor(Math.random() * choices + min);
       this.randomNun = randomNun;
       return randomNun;
+
+      // this.random(0, this.quotations.length - 1)
     }
   }
 };
@@ -134,7 +147,7 @@ export default {
   .chat {
     position: absolute;
     right: 3px;
-    bottom: 0px;
+    bottom: 1px;
   }
 }
 </style>

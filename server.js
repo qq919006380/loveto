@@ -1,12 +1,26 @@
 var express = require('express');
+var cors = require('cors')
 var app = express();
 var http = require('http').Server(app);
 var io = require("socket.io")(http);
 var AV = require('leancloud-storage');
-//设置静态资源
+let port = 8080
+/**设置静态资源 */
 app.use('/image', express.static(__dirname + '/static/image'));
-// 路由为/默认dist静态文件夹
+app.use(cors())
+app.listen(80, function () {
+    console.log('CORS-enabled web server listening on port 80')
+})
+/**路由为/默认dist静态文件夹 */
 // app.use('/', express.static(__dirname + '/dist'));
+app.get('/getDialogueAll', function (req, res) {
+    var query = new AV.Query('dialogue');
+    // query.equalTo('num', 3);
+    query.find().then(function (data) {
+        res.send(data);
+    });;
+
+});
 // 存储服务
 var { Query, User } = AV;
 AV.init({
@@ -15,7 +29,7 @@ AV.init({
     // serverURLs: "https://xxx.example.com"
 });
 
-let port = 8080
+
 
 var users = []; // 储存登录用户
 var usersInfo = [];  // 存储用户姓名和头像
