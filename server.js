@@ -9,7 +9,7 @@ let port = 8080
 app.use('/image', express.static(__dirname + '/static/image'));
 app.use(cors())
 var corsOptions = {
-    origin: 'http://localhost:3000', //只有百度可以访问
+    origin: 'http://47.244.164.231:3000', //只有百度可以访问
     optionsSuccessStatus: 200 
   }
 app.listen(80, function () {
