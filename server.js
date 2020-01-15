@@ -8,12 +8,16 @@ let port = 8080
 /**设置静态资源 */
 app.use('/image', express.static(__dirname + '/static/image'));
 app.use(cors())
+var corsOptions = {
+    origin: 'http://47.91.156.35:3000', //只有百度可以访问
+    optionsSuccessStatus: 200 
+  }
 app.listen(80, function () {
     console.log('CORS-enabled web server listening on port 80')
 })
 /**路由为/默认dist静态文件夹 */
 // app.use('/', express.static(__dirname + '/dist'));
-app.get('/getDialogueAll', function (req, res) {
+app.get('/getDialogueAll', cors(corsOptions),function (req, res) {
     var query = new AV.Query('dialogue');
     // query.equalTo('num', 3);
     query.find().then(function (data) {
