@@ -49,7 +49,7 @@ export default {
       this.$axios({
         method: "get",
         // url: "http://localhost:8080/getDialogueAll" // 本地接口地址
-        url: "http://47.244.164.231:8080/getDialogueAll" // 生产环境接口
+        url: "47.244.164.231:8080/getDialogueAll" // 生产环境接口
       })
         .then(response => {
           console.log(response.data);
