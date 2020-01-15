@@ -50,7 +50,7 @@ export default {
       if (process.env.NODE_ENV === "development") {
         url = "http://localhost:8080/getDialogueAll";
       } else if (process.env.NODE_ENV === "production") {
-        url = "http://47.91.156.35:8080/getDialogueAll";
+        url = "http://47.244.164.231:8080/getDialogueAll";
       }
       this.$axios({
         method: "get",
