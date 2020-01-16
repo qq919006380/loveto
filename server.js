@@ -9,6 +9,7 @@ let port = 8080
 app.use('/image', express.static(__dirname + '/static/image'));
 app.use(cors())
 var corsOptions = {
+    // origin: 'http://localhost:3000',//只有本地访问
     // origin: 'http://192.168.31.168:3000', //只有本地访问
     origin: 'http://47.244.164.231:3000/',//生产环境
     optionsSuccessStatus: 200
