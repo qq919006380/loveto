@@ -49,7 +49,9 @@ var host;
 if (process.env.NODE_ENV === "development") {
   host = "http://localhost:8080";
 } else if (process.env.NODE_ENV === "production") {
-  host = "http://47.244.164.231:3000";
+  // host = "http://47.244.164.231:3000";
+  // host = "http://192.168.31.168:3000";
+  host = "http://localhost:8080";
 }
 const socket = io(host);
 console.log(process.env.NODE_ENV);

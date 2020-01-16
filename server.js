@@ -8,11 +8,15 @@ let port = 8080
 /**设置静态资源 */
 app.use('/image', express.static(__dirname + '/static/image'));
 app.use(cors())
+var whitelist = ['http://localhost:3000', 'http://192.168.31.168:3000', 'http://47.244.164.231:3000']
 var corsOptions = {
-    // origin: 'http://localhost:3000',//只有本地访问
-    // origin: 'http://192.168.31.168:3000', //只有本地访问
-    origin: 'http://47.244.164.231:3000/',//生产环境
-    optionsSuccessStatus: 200
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('不允许跨域'))
+        }
+    }
 }
 /**路由为/默认dist静态文件夹 */
 // app.use('/', express.static(__dirname + '/dist'));

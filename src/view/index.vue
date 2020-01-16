@@ -48,7 +48,7 @@ export default {
     getDialogueAll() {
       this.$axios({
         method: "get",
-        url: this.GLOBAL_URL
+        url: this.GLOBAL_URL + "/getDialogueAll"
       })
         .then(response => {
           console.log(response.data);

@@ -10,9 +10,9 @@ import 'iview/dist/styles/iview.css';
 Vue.prototype.$EventBus = new Vue()
 Vue.prototype.$axios = axios
 if (process.env.NODE_ENV === "development") {
-    var url = "http://localhost:8080/getDialogueAll";
+    var url = "http://localhost:8080";
 } else if (process.env.NODE_ENV === "production") {
-    var url = "http://47.244.164.231:8080/getDialogueAll";
+    var url = "http://47.244.164.231:8080";
 }
 Vue.prototype.GLOBAL_URL = url
 Vue.use(iView);
