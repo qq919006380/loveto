@@ -49,7 +49,7 @@ var host;
 if (process.env.NODE_ENV === "development") {
   host = "http://localhost:8080";
 } else if (process.env.NODE_ENV === "production") {
-  host = "http://47.244.164.231:3000";//服务器
+  host = "http://47.244.164.231:8080";//服务器
   // host = "http://192.168.31.168:8080";//本地1
   // host = "http://localhost:8080";//本地2
 }
