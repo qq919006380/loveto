@@ -7,7 +7,7 @@ var AV = require('leancloud-storage');
 let port = 8080
 /**设置静态资源 */
 app.use('/image', express.static(__dirname + '/static/image'));
-app.use(cors())
+// app.use(cors())
 var whitelist = ['http://localhost:3000', 'http://192.168.31.168:3000', 'http://47.244.164.231:3000']
 var corsOptions = {
     origin: function (origin, callback) {
