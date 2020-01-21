@@ -61,8 +61,6 @@ export default {
   background: @bg_1;
   color: @bg_4;
   font-family: "LiSu", "Courier", monospace;
-  & > nav-item {
-  }
 }
 .footer {
   display: flex;
