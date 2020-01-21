@@ -19,7 +19,7 @@
         <Poptip trigger="hover">
           <a>联系我</a>
           <div slot="content">
-            <img width="30" src="../static/emoji/qq.jpg" alt />
+            <img width="30" src="../src/assets/emoji/qq.jpg" alt />
             <span style="font-size:14px">QQ:919006380</span>
           </div>
         </Poptip>

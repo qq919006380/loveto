@@ -6,7 +6,7 @@ var io = require("socket.io")(http);
 var AV = require('leancloud-storage');
 let port = 8080
 /**设置静态资源 */
-app.use('/image', express.static(__dirname + '/static/image'));
+app.use('/image', express.static(__dirname + './src/assets/image'));
 // app.use(cors())
 var whitelist = ['http://localhost:3000', 'http://192.168.31.168:3000', 'http://47.244.164.231:3000']
 var corsOptions = {
@@ -25,7 +25,7 @@ app.get('/getDialogueAll', cors(corsOptions), function (req, res) {
     // query.equalTo('num', 3);
     query.find().then(function (data) {
         res.send(data);
-    });;
+    });
 
 });
 // 存储服务

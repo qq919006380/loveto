@@ -44,7 +44,6 @@
 
 <script>
 import io from "socket.io-client";
-
 var host;
 if (process.env.NODE_ENV === "development") {
   host = "http://localhost:8080";
@@ -55,7 +54,6 @@ if (process.env.NODE_ENV === "development") {
 }
 const socket = io(host);
 console.log(process.env.NODE_ENV);
-
 export default {
   data() {
     return {
@@ -103,7 +101,6 @@ export default {
       });
       this.scrollTop();
     });
-
     // 接收消息
     socket.on("receiveMsg", obj => {
       this.messageList.push(obj);
@@ -130,7 +127,6 @@ export default {
       // 成功保存
       this.send();
     },
-
     send() {
       this.date = new Date().toTimeString().substr(0, 8);
       socket.emit("sendMsg", {
@@ -141,7 +137,6 @@ export default {
       });
       this.message = "";
     },
-
     scrollTop() {
       setTimeout(() => {
         var box = this.$el.querySelector(".messageBox");

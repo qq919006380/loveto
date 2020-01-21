@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="content">
-      <div class="quotations-item" :class="xxx.gender" v-for="xxx in quotations[randomNun]['item']">
+      <div class="quotations-item" :class="xxx.gender"  v-for="xxx in quotations[randomNun]['item']">
         <div class="avatar">
           <Avatar
             src="http://www.ghost64.com/qqtupian/zixunImg/local/2019/03/21/15531703562123.jpeg"
@@ -23,6 +23,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import Chat from "../components/chat";
